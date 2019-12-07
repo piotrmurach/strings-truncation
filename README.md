@@ -1,18 +1,18 @@
 # Strings::Truncation
 
-[![Gem Version](https://badge.fury.io/rb/strings-inflection.svg)][gem]
-[![Build Status](https://secure.travis-ci.org/piotrmurach/strings-inflection.svg?branch=master)][travis]
-[![Build status](https://ci.appveyor.com/api/projects/status/huj82599jbk2quv2?svg=true)][appveyor]
+[![Gem Version](https://badge.fury.io/rb/strings-truncation.svg)][gem]
+[![Build Status](https://secure.travis-ci.org/piotrmurach/strings-truncation.svg?branch=master)][travis]
+[![Build status](https://ci.appveyor.com/api/projects/status/s8y94c4tvi8mgrh2?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/f7ecb5bf87696e522ccb/maintainability)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/strings-inflection/badge.svg?branch=master)][coverage]
-[![Inline docs](http://inch-ci.org/github/piotrmurach/strings-inflection.svg?branch=master)][inchpages]
+[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/strings-truncation/badge.svg?branch=master)][coverage]
+[![Inline docs](http://inch-ci.org/github/piotrmurach/strings-truncation.svg?branch=master)][inchpages]
 
-[gem]: http://badge.fury.io/rb/strings-inflection
-[travis]: http://travis-ci.org/piotrmurach/strings-inflection
-[appveyor]: https://ci.appveyor.com/project/piotrmurach/strings-inflection
-[codeclimate]: https://codeclimate.com/github/piotrmurach/strings-inflection/maintainability
-[coverage]: https://coveralls.io/github/piotrmurach/strings-inflection?branch=master
-[inchpages]: http://inch-ci.org/github/piotrmurach/strings-inflection
+[gem]: http://badge.fury.io/rb/strings-truncation
+[travis]: http://travis-ci.org/piotrmurach/strings-truncation
+[appveyor]: https://ci.appveyor.com/project/piotrmurach/strings-truncation
+[codeclimate]: https://codeclimate.com/github/piotrmurach/strings-truncation/maintainability
+[coverage]: https://coveralls.io/github/piotrmurach/strings-truncation?branch=master
+[inchpages]: http://inch-ci.org/github/piotrmurach/strings-truncation
 
 > Truncate strings with multibyte chars and ansi codes
 
