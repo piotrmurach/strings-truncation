@@ -41,20 +41,31 @@ Or install it yourself as:
 
 ## Usage
 
+Use `truncate` to shorten string to 30 characters by default:
+
 ```ruby
-text = "for there is no folly of the beast of the earth"
+Strings::Truncate.truncate("It is not down on any map; true places never are.")
+# => "It is not down on any map; tr…""
 ```
 
+You can specify custom omission string:
+
 ```ruby
-Strings::Truncation.truncate(text, 20)
-# => "for there is no fol…"
+Strings::Truncation.truncate("It is not down on any map; true places never are.", 40, trailing: "...(continued)")
+# => "It is not down on any map;...(continued)"
 ```
 
-**Strings::Truncate** works with ANSI escape codes:
+It supports truncation of multibyte characters. For example, truncating Japanese sentence:
 
 ```ruby
-text = "I try \e[34mall things\e[0m, I achieve what I can"
-Strings::Truncation.truncate(text, 18)
+Strings::Truncation.truncate("太丸ゴシック体", 8)
+# => "太丸ゴ…"
+```
+
+It supports truncation of ANSI escape codes as well:
+
+```ruby
+Strings::Truncation.truncate("I try \e[34mall things\e[0m, I achieve what I can", 18)
 # => "I try \e[34mall things\e[0m…"
 ```
 
@@ -66,7 +77,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/strings-truncation. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/strings-truncation. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -75,3 +86,8 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Strings::Truncation project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/strings-truncation/blob/master/CODE_OF_CONDUCT.md).
+
+
+## Copyright
+
+Copyright (c) 2019 Piotr Murach. See LICENSE for further details.
