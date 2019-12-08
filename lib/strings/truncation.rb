@@ -48,7 +48,9 @@ module Strings
                 omission: DEFAULT_TRAILING)
       truncate_at = length if length
 
-      if display_width(text) <= truncate_at.to_i || truncate_at.to_i.zero?
+
+      if display_width(Strings::ANSI.sanitize(text)) <= truncate_at.to_i ||
+         truncate_at.to_i.zero?
         return text
       end
 
