@@ -49,9 +49,16 @@ RSpec.describe Strings::Truncation, '#truncate' do
 
   it "truncates on word boundary" do
     text = "It is not down on any map; true places never are."
-    truncation = Strings::Truncation.truncate(text, 18, separator: " ")
+    truncation = Strings::Truncation.truncate(text, 21, separator: " ")
 
     expect(truncation).to eq("It is not down on…")
+  end
+
+  it "truncates using :length option" do
+    text = "It is not down on any map; true places never are."
+    truncation = Strings::Truncation.truncate(text, length: 21)
+
+    expect(truncation).to eq("It is not down on an…")
   end
 
   it "truncates with a custom omission" do

@@ -44,8 +44,10 @@ module Strings
     #   # => "It is not down on any map;...(continued)"
     #
     # @api public
-    def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil,
+    def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil, length: nil,
                 omission: DEFAULT_TRAILING)
+      truncate_at = length if length
+
       if display_width(text) <= truncate_at.to_i || truncate_at.to_i.zero?
         return text
       end
