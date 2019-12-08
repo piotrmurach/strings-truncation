@@ -13,7 +13,7 @@ RSpec.describe Strings::Truncation, '#truncate' do
     expect(Strings::Truncation.truncate(text, nil)).to eq(text)
   end
 
-  it "truncate length of 1 results in just the trailing character" do
+  it "truncate length of 1 results in just the omission character" do
     text = "It is not down on any map; true places never are."
 
     expect(Strings::Truncation.truncate(text, 1)).
@@ -41,10 +41,10 @@ RSpec.describe Strings::Truncation, '#truncate' do
 
   it "truncates whole words when separated used" do
     text = "It is not down on any map; true places never are."
-    trailing = '…'
+    omission = '…'
     truncation = Strings::Truncation.truncate(text, separator: " ")
 
-    expect(truncation).to eq("It is not down on any map;#{trailing}")
+    expect(truncation).to eq("It is not down on any map;#{omission}")
   end
 
   it "truncates on word boundary" do
@@ -56,7 +56,7 @@ RSpec.describe Strings::Truncation, '#truncate' do
 
   it "truncates with a custom omission" do
     text = "It is not down on any map; true places never are."
-    truncation = Strings::Truncation.truncate(text, 40, trailing: "...(continued)")
+    truncation = Strings::Truncation.truncate(text, 40, omission: "...(continued)")
 
     expect(truncation).to eq("It is not down on any map;...(continued)")
   end

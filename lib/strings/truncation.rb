@@ -27,7 +27,7 @@ module Strings
     #
     # @param [String] separator
     #   the character for splitting words
-    # @param [String] trailing
+    # @param [String] omission
     #   the string to use for ending truncated sentence
     #
     # @example
@@ -40,17 +40,17 @@ module Strings
     #   Strings::Truncate.truncate("It is not down on any map; true places never are.", separator: " " )
     #   # => "It is not down on any map;…"
     #
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 40, trailing: '... (see more)' )
+    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 40, omission: '... (see more)' )
     #   # => "It is not down on any map;...(continued)"
     #
     # @api public
     def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil,
-                trailing: DEFAULT_TRAILING)
+                omission: DEFAULT_TRAILING)
       if display_width(text) <= truncate_at.to_i || truncate_at.to_i.zero?
         return text
       end
 
-      length_without_trailing = truncate_at - display_width(trailing)
+      length_without_omission = truncate_at - display_width(omission)
       scanner = StringScanner.new(text)
       length = 0
       ansi_reset = false
@@ -74,7 +74,7 @@ module Strings
             word = []
           end
 
-          if length <= length_without_trailing
+          if length <= length_without_omission
             word << char
           else
             stop = true
@@ -86,7 +86,7 @@ module Strings
 
       words << [Strings::ANSI::RESET] if ansi_reset
 
-      words.join + trailing
+      words.join + omission
     end
     module_function :truncate
 

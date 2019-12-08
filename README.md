@@ -51,7 +51,7 @@ Strings::Truncate.truncate("It is not down on any map; true places never are.")
 You can specify custom omission string:
 
 ```ruby
-Strings::Truncation.truncate("It is not down on any map; true places never are.", 40, trailing: "...(continued)")
+Strings::Truncation.truncate("It is not down on any map; true places never are.", 40, omission: "...(continued)")
 # => "It is not down on any map;...(continued)"
 ```
 
