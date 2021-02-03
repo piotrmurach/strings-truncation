@@ -1,14 +1,18 @@
+<div align="center">
+  <img width="225" src="https://github.com/piotrmurach/strings/blob/master/assets/strings_logo.png" alt="strings logo" />
+</div>
+
 # Strings::Truncation
 
 [![Gem Version](https://badge.fury.io/rb/strings-truncation.svg)][gem]
-[![Build Status](https://secure.travis-ci.org/piotrmurach/strings-truncation.svg?branch=master)][travis]
+[![Actions CI](https://github.com/piotrmurach/strings-truncation/workflows/CI/badge.svg?branch=master)][gh_actions_ci]
 [![Build status](https://ci.appveyor.com/api/projects/status/s8y94c4tvi8mgrh2?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/f7ecb5bf87696e522ccb/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/strings-truncation/badge.svg?branch=master)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/strings-truncation.svg?branch=master)][inchpages]
 
 [gem]: http://badge.fury.io/rb/strings-truncation
-[travis]: http://travis-ci.org/piotrmurach/strings-truncation
+[gh_actions_ci]: https://github.com/piotrmurach/strings-truncation/actions?query=workflow%3ACI
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/strings-truncation
 [codeclimate]: https://codeclimate.com/github/piotrmurach/strings-truncation/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/strings-truncation?branch=master
