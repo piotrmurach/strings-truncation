@@ -12,13 +12,13 @@ RSpec.describe Strings::Truncation do
       Strings::Truncation.truncate(text, 20)
     }.to perform_slower_than {
       text.truncate(20)
-    }.at_most(250).times
+    }.at_most(150).times
   end
 
-  it "allocates no more than 132 objects" do
+  it "allocates no more than 107 objects" do
     text = "It is not down on any map; true places never are."
     expect {
-      Strings::Truncation.truncate(text)
-    }.to perform_allocation(140)
+      Strings::Truncation.truncate(text, 20)
+    }.to perform_allocation(107)
   end
 end

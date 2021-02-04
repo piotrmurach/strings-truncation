@@ -18,6 +18,7 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
   it "correctly estimates width of strings with ANSI codes " do
     text = "I try \e[34mall things\e[0m, I achieve"
 
-    expect(Strings::Truncation.truncate(text)).to eq("I try \e[34mall things\e[0m, I achieve")
+    expect(Strings::Truncation.truncate(text))
+      .to eq("I try \e[34mall things\e[0m, I achieve")
   end
 end

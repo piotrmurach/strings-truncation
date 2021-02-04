@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Strings::Truncation, '#truncate' do
+RSpec.describe Strings::Truncation, "#truncate" do
   it "doesn't truncate 0 length" do
     text = "It is not down on any map; true places never are."
 
@@ -16,8 +16,8 @@ RSpec.describe Strings::Truncation, '#truncate' do
   it "truncate length of 1 results in just the omission character" do
     text = "It is not down on any map; true places never are."
 
-    expect(Strings::Truncation.truncate(text, 1)).
-      to eq(Strings::Truncation::DEFAULT_TRAILING)
+    expect(Strings::Truncation.truncate(text, 1))
+      .to eq(Strings::Truncation::DEFAULT_OMISSION)
   end
 
   it "doesn't change text for equal length" do
@@ -36,12 +36,12 @@ RSpec.describe Strings::Truncation, '#truncate' do
   it "goes over default length of 30 characters" do
     text = "It is not down on any map; true places never are."
 
-    expect(Strings::Truncation.truncate(text)).to eq(text[0..28] + "…")
+    expect(Strings::Truncation.truncate(text)).to eq("#{text[0..28]}…")
   end
 
   it "truncates whole words when separated used" do
     text = "It is not down on any map; true places never are."
-    omission = '…'
+    omission = "…"
     truncation = Strings::Truncation.truncate(text, separator: " ")
 
     expect(truncation).to eq("It is not down on any map;#{omission}")
@@ -63,7 +63,8 @@ RSpec.describe Strings::Truncation, '#truncate' do
 
   it "truncates with a custom omission" do
     text = "It is not down on any map; true places never are."
-    truncation = Strings::Truncation.truncate(text, 40, omission: "...(continued)")
+    truncation = Strings::Truncation.truncate(text, 40,
+                                              omission: "...(continued)")
 
     expect(truncation).to eq("It is not down on any map;...(continued)")
   end

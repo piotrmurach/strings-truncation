@@ -10,7 +10,7 @@ module Strings
   module Truncation
     class Error < StandardError; end
 
-    DEFAULT_TRAILING = '…'.freeze
+    DEFAULT_OMISSION = "…".freeze
 
     DEFAULT_LENGTH = 30
 
@@ -27,6 +27,7 @@ module Strings
     #
     # @param [String] separator
     #   the character for splitting words
+    #
     # @param [String] omission
     #   the string to use for ending truncated sentence
     #
@@ -40,17 +41,15 @@ module Strings
     #   Strings::Truncate.truncate("It is not down on any map; true places never are.", separator: " " )
     #   # => "It is not down on any map;…"
     #
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 40, omission: '... (see more)' )
+    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 40, omission: "... (see more)" )
     #   # => "It is not down on any map;...(continued)"
     #
     # @api public
     def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil, length: nil,
-                omission: DEFAULT_TRAILING)
+                 omission: DEFAULT_OMISSION)
       truncate_at = length if length
 
-
-      if display_width(Strings::ANSI.sanitize(text)) <= truncate_at.to_i ||
-         truncate_at.to_i.zero?
+      if text.bytesize <= truncate_at.to_i || truncate_at.to_i.zero?
         return text
       end
 
@@ -62,12 +61,12 @@ module Strings
       words = []
       word = []
 
-      while !stop
+      while !(scanner.eos? || stop)
         if scanner.scan(RESET_REGEXP)
-          word << scanner[0]
+          words << scanner.matched
           ansi_reset = false
         elsif scanner.scan(ANSI_REGEXP)
-          word << scanner[0]
+          words << scanner.matched
           ansi_reset = true
         else
           char = scanner.getch
@@ -75,11 +74,15 @@ module Strings
 
           if char == separator
             words << word.join
-            word = []
+            word.clear
           end
 
           if length <= length_without_omission
-            word << char
+            if separator
+              word << char
+            else
+              words << char
+            end
           else
             stop = true
           end
@@ -88,9 +91,9 @@ module Strings
 
       words << word.join if words.empty?
 
-      words << [Strings::ANSI::RESET] if ansi_reset
+      words << Strings::ANSI::RESET if ansi_reset
 
-      words.join + omission
+      "#{words.join}#{omission if stop}"
     end
     module_function :truncate
 
