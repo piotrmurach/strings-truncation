@@ -61,6 +61,14 @@ RSpec.describe Strings::Truncation, "#truncate" do
     expect(truncation).to eq("It is not down on an…")
   end
 
+  it "calls truncate on an instance" do
+    text = "It is not down on any map; true places never are."
+    strings = Strings::Truncation.new
+    truncation = strings.truncate(text, length: 21, separator: " ")
+
+    expect(truncation).to eq("It is not down on…")
+  end
+
   it "truncates with a custom omission" do
     text = "It is not down on any map; true places never are."
     truncation = Strings::Truncation.truncate(text, 40,

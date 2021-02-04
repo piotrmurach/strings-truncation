@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require "strscan"
 require "strings-ansi"
 require "unicode/display_width"
@@ -7,7 +8,7 @@ require "unicode/display_width"
 require_relative "truncation/version"
 
 module Strings
-  module Truncation
+  class Truncation
     class Error < StandardError; end
 
     DEFAULT_OMISSION = "…".freeze
@@ -16,6 +17,19 @@ module Strings
 
     ANSI_REGEXP = Regexp.new(Strings::ANSI::ANSI_MATCHER)
     RESET_REGEXP = Regexp.new(Regexp.escape(Strings::ANSI::RESET))
+
+    # Global instance
+    #
+    # @api private
+    def self.__instance__
+      @__instance__ ||= Truncation.new
+    end
+
+    class << self
+      extend Forwardable
+
+      delegate %i[truncate] => :__instance__
+    end
 
     # Truncate a text at a given length (defualts to 30)
     #
@@ -95,7 +109,6 @@ module Strings
 
       "#{words.join}#{omission if stop}"
     end
-    module_function :truncate
 
     # Visible width of a string
     #
@@ -105,6 +118,5 @@ module Strings
     def display_width(string)
       Unicode::DisplayWidth.of(string)
     end
-    module_function :display_width
   end # Truncation
 end # Strings
