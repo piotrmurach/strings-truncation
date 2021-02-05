@@ -63,9 +63,9 @@ module Strings
                  omission: DEFAULT_OMISSION)
       truncate_at = length if length
 
-      if text.bytesize <= truncate_at.to_i || truncate_at.to_i.zero?
-        return text
-      end
+      return text if truncate_at.nil? || text.bytesize <= truncate_at.to_i
+
+      return "" if truncate_at.zero?
 
       length_without_omission = truncate_at - display_width(omission)
       scanner = StringScanner.new(text)

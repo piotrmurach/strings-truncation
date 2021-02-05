@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe Strings::Truncation, "#truncate" do
-  it "doesn't truncate 0 length" do
-    text = "It is not down on any map; true places never are."
-
-    expect(Strings::Truncation.truncate(text, 0)).to eq(text)
-  end
-
-  it "doensn't change text for nil length" do
+  it "doesn't truncate for nil length and returns the original text" do
     text = "It is not down on any map; true places never are."
 
     expect(Strings::Truncation.truncate(text, nil)).to eq(text)
   end
 
-  it "truncate length of 1 results in just the omission character" do
+  it "truncates to length of 0 and returns an empty string" do
+    text = "It is not down on any map; true places never are."
+
+    expect(Strings::Truncation.truncate(text, 0)).to eq("")
+  end
+
+  it "truncates to length of 1 and returns only the omission character" do
     text = "It is not down on any map; true places never are."
 
     expect(Strings::Truncation.truncate(text, 1))
