@@ -71,9 +71,23 @@ RSpec.describe Strings::Truncation, "#truncate" do
 
   it "truncates with a custom omission" do
     text = "It is not down on any map; true places never are."
-    truncation = Strings::Truncation.truncate(text, 40,
-                                              omission: "...(continued)")
+    truncation = Strings::Truncation.truncate(text, 40, omission: "[...]")
 
-    expect(truncation).to eq("It is not down on any map;...(continued)")
+    expect(truncation).to eq("It is not down on any map; true pla[...]")
+  end
+
+  it "truncates with a custom omission and separator" do
+    text = "It is not down on any map; true places never are."
+    truncation = Strings::Truncation.truncate(text, 40, omission: "[...]",
+                                              separator: " ")
+
+    expect(truncation).to eq("It is not down on any map; true[...]")
+  end
+
+  it "truncates from an index" do
+    text = "It is not down on any map; true places never are."
+    truncation = Strings::Truncation.truncate(text, length: 21, from: 10)
+
+    expect(truncation).to eq("…down on any map; tr…")
   end
 end

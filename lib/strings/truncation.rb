@@ -11,7 +11,7 @@ module Strings
   class Truncation
     class Error < StandardError; end
 
-    DEFAULT_OMISSION = "…".freeze
+    DEFAULT_OMISSION = "…"
 
     DEFAULT_LENGTH = 30
 
@@ -39,37 +39,64 @@ module Strings
     # @param [Integer] truncate_at
     #   the width at which to truncate the text
     #
-    # @param [String] separator
+    # @param [String|Regexp] separator
     #   the character for splitting words
     #
     # @param [String] omission
-    #   the string to use for ending truncated sentence
+    #   the string to use for displaying truncated content
     #
     # @example
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.")
+    #   truncate("It is not down on any map; true places never are.")
     #   # => "It is not down on any map; tr…""
     #
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 15)
+    #   truncate("It is not down on any map; true places never are.", 15)
     #   # => "It is not down…""
     #
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", separator: " " )
+    #   truncate("It is not down on any map; true places never are.",
+    #            separator: " ")
     #   # => "It is not down on any map;…"
     #
-    #   Strings::Truncate.truncate("It is not down on any map; true places never are.", 40, omission: "... (see more)" )
-    #   # => "It is not down on any map;...(continued)"
+    #   truncate("It is not down on any map; true places never are.", 40,
+    #            omission: "[...]")
+    #   # => "It is not down on any map; true pla[...]"
     #
     # @api public
     def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil, length: nil,
-                 omission: DEFAULT_OMISSION)
+                 omission: DEFAULT_OMISSION, from: 0)
       truncate_at = length if length
 
       return text if truncate_at.nil? || text.bytesize <= truncate_at.to_i
 
       return "" if truncate_at.zero?
 
-      length_without_omission = truncate_at - display_width(omission)
+      omission_width = display_width(omission)
+      length_without_omission = truncate_at - omission_width
+      length_without_omission -= omission_width if from > 0
+      words, stop = *slice(text, from, length_without_omission,
+                           separator: separator)
+
+      "#{omission if from > 0}#{words}#{omission if stop}"
+    end
+
+    private
+
+    # Extract number of characters from a text starting at the from position
+    #
+    # @param [Integer] from
+    #   the position to start from
+    # @param [Integer] length
+    #   the number of characters to extract
+    # @param [String|Regexp] separator
+    #   the string or pattern to use for splitting words
+    #
+    # @return [Array<String, Boolean>]
+    #   return a substring and a stop flag
+    #
+    # @api private
+    def slice(text, from, length, separator: nil)
       scanner = StringScanner.new(text)
-      length = 0
+      current_length = 0
+      start_position = 0
       ansi_reset = false
       stop = false
       words = []
@@ -84,14 +111,17 @@ module Strings
           ansi_reset = true
         else
           char = scanner.getch
-          length += display_width(char)
+          char_width = display_width(char)
+          start_position += char_width
+          next if start_position <= from
+          current_length += char_width
 
           if char == separator
             words << word.join
             word.clear
           end
 
-          if length <= length_without_omission
+          if current_length <= length
             if separator
               word << char
             else
@@ -107,7 +137,7 @@ module Strings
 
       words << Strings::ANSI::RESET if ansi_reset
 
-      "#{words.join}#{omission if stop}"
+      [words.join, stop]
     end
 
     # Visible width of a string
