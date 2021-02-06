@@ -43,7 +43,7 @@ Or install it yourself as:
 
     $ gem install strings-truncation
 
-## Usage
+## 1. Usage
 
 Use `truncate` to shorten string to 30 characters by default:
 
@@ -71,6 +71,25 @@ It supports truncation of ANSI escape codes as well:
 ```ruby
 Strings::Truncation.truncate("I try \e[34mall things\e[0m, I achieve what I can", 18)
 # => "I try \e[34mall things\e[0m…"
+```
+
+## 2. Extending String class
+
+Though it is highly discouraged to pollute core Ruby classes, you can add the required methods to String class by using refinements.
+
+To include all the **Strings::Truncation** methods, you can load extensions like so:
+
+```ruby
+require "strings/truncation/extensions"
+
+using Strings::Truncation::Extensions
+```
+
+And then call `truncate` directly on strings:
+
+```ruby
+"I try all things, I achieve what I can.".truncate(20, separator: " ")
+# => "I try all things, I…"
 ```
 
 ## Development
