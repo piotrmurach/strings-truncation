@@ -2,9 +2,9 @@
 
 require "strings/truncation/extensions"
 
-RSpec.describe Strings::Truncation::Extensions do
-  using described_class
+using Strings::Truncation::Extensions
 
+RSpec.describe Strings::Truncation::Extensions do
   it "truncates a string to a given length" do
     expect("I try all things, I achieve what I can.".truncate(15))
       .to eq("I try all thin…")
