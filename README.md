@@ -18,13 +18,13 @@
 [coverage]: https://coveralls.io/github/piotrmurach/strings-truncation?branch=master
 [inchpages]: http://inch-ci.org/github/piotrmurach/strings-truncation
 
-> Truncate strings with multibyte chars and ansi codes
+> Truncate strings with fullwidth characters and ANSI codes
 
 ## Features
 
 * No monkey-patching String class
 * Supports multibyte character encodings such as UTF-8, EUC-JP
-* Handles languages without white-spaces between words (like Chinese and Japanese)
+* Handles languages without white-spaces between words (Chinese, Japanese, Korean etc)
 * Supports ANSI escape codes
 
 ## Installation
@@ -32,7 +32,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'strings-truncation'
+gem "strings-truncation"
 ```
 
 And then execute:
@@ -48,29 +48,58 @@ Or install it yourself as:
 Use `truncate` to shorten string to 30 characters by default:
 
 ```ruby
-Strings::Truncate.truncate("It is not down on any map; true places never are.")
-# => "It is not down on any map; tr…""
+strings = Strings::Truncation.new
+strings.truncate("I try all things, I achieve what I can.")
+# => "I try all things, I achieve w…"
+```
+
+As a convenience, you can call methods directly on a class:
+
+```ruby
+Strings::Truncation.truncate("I try all things, I achieve what I can.")
+# => "I try all things, I achieve w…"
+```
+
+To change the default truncation length, pass an integer as a second argument:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", 15)
+# => "I try all thin…"
+```
+
+Or if you want to be more flexible use `:length` keyword:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", length: 15)
+# => "I try all thin…"
 ```
 
 You can specify custom omission string:
 
 ```ruby
-Strings::Truncation.truncate("It is not down on any map; true places never are.", 40, omission: "...(continued)")
-# => "It is not down on any map;...(continued)"
+strings.truncate("I try all things, I achieve what I can.", 30, omission: "[...]")
+# => "I try all things, I achie[...]"
 ```
 
-It supports truncation of multibyte characters. For example, truncating Japanese sentence:
+If you wish to truncate preserving words use a separator:
 
 ```ruby
-Strings::Truncation.truncate("太丸ゴシック体", 8)
+strings.truncate("I try all things, I achieve what I can.", separator: " ")
+# => "I try all things, I achieve…"
+```
+
+It supports truncation of fullwidth characters (Chinese, Japanese, Korean etc):
+
+```ruby
+strings.truncate("太丸ゴシック体", 8)
 # => "太丸ゴ…"
 ```
 
 It supports truncation of ANSI escape codes as well:
 
 ```ruby
-Strings::Truncation.truncate("I try \e[34mall things\e[0m, I achieve what I can", 18)
-# => "I try \e[34mall things\e[0m…"
+strings.truncate("\e[34mI try all things, I achieve what I can\e[0m", 18)
+# => "\e[34mI try all things,\e[0m…"
 ```
 
 ## 2. Extending String class
@@ -85,7 +114,7 @@ require "strings/truncation/extensions"
 using Strings::Truncation::Extensions
 ```
 
-And then call `truncate` directly on strings:
+And then call `truncate` directly on any string:
 
 ```ruby
 "I try all things, I achieve what I can.".truncate(20, separator: " ")
