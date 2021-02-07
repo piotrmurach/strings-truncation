@@ -15,8 +15,9 @@ module Strings
 
     DEFAULT_LENGTH = 30
 
-    ANSI_REGEXP = Regexp.new(Strings::ANSI::ANSI_MATCHER)
-    RESET_REGEXP = Regexp.new(Regexp.escape(Strings::ANSI::RESET))
+    ANSI_REGEXP  = /#{Strings::ANSI::ANSI_MATCHER}/.freeze
+    RESET_REGEXP = /#{Regexp.escape(Strings::ANSI::RESET)}/.freeze
+    END_REGEXP   = /(#{Strings::ANSI::ANSI_MATCHER})?\z/.freeze
 
     # Global instance
     #
@@ -121,7 +122,7 @@ module Strings
             word.clear
           end
 
-          if current_length <= length
+          if current_length <= length || scanner.check(END_REGEXP)
             if separator
               word << char
             else

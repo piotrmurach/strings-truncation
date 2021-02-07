@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Strings::Truncation, "truncates ansi" do
+  it "doesn't truncate string matching length" do
+    text = "\e[32mHello\e[0m"
+    expect(Strings::Truncation.truncate(text, 5)).to eq(text)
+  end
+
   it "truncates string with ANSI characters within boundary" do
     text = "I try \e[34mall things\e[0m, I achieve what I can"
     truncation = Strings::Truncation.truncate(text, 18)

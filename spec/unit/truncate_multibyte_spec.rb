@@ -4,6 +4,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
   context "when two characters display length and without space" do
     let(:text) { "ラドクリフ、マラソン五輪代表に1万m出場にも含み" }
 
+    it "doesn't truncate string matching length" do
+      text = "こんにちは"
+      expect(Strings::Truncation.truncate(text, 10)).to eq(text)
+    end
+
     it "truncates text and displays omission" do
       expect(Strings::Truncation.truncate(text, 12)).to eq("ラドクリフ…")
     end
@@ -32,6 +37,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
   end
 
   context "when one character display length with space" do
+    it "doesn't truncate string matching length" do
+      text = "Здравствуйте"
+      expect(Strings::Truncation.truncate(text, 12)).to eq(text)
+    end
+
     it "truncates 1 character long multibyte with spaces correctly" do
       text = "Я пробую все, добиваюсь того, что могу"
       truncation = Strings::Truncation.truncate(text, 20)
