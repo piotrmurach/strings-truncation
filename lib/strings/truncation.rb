@@ -17,7 +17,7 @@ module Strings
 
     ANSI_REGEXP  = /#{Strings::ANSI::ANSI_MATCHER}/.freeze
     RESET_REGEXP = /#{Regexp.escape(Strings::ANSI::RESET)}/.freeze
-    END_REGEXP   = /(#{Strings::ANSI::ANSI_MATCHER})?\z/.freeze
+    END_REGEXP   = /\A(#{Strings::ANSI::ANSI_MATCHER})?\z/.freeze
 
     # Global instance
     #
@@ -44,7 +44,10 @@ module Strings
     #   the character for splitting words
     #
     # @param [String] omission
-    #   the string to use for displaying truncated content
+    #   the string to use for displaying omitted content
+    #
+    # @param [String|Integer] position
+    #   the position in text from which to omit content
     #
     # @example
     #   truncate("It is not down on any map; true places never are.")
@@ -62,16 +65,78 @@ module Strings
     #   # => "It is not down on any map; true pla[...]"
     #
     # @api public
-    def truncate(text, truncate_at = DEFAULT_LENGTH, separator: nil, length: nil,
-                 omission: DEFAULT_OMISSION, from: 0)
+    def truncate(text, truncate_at = DEFAULT_LENGTH, length: nil, position: 0,
+                 separator: nil, omission: DEFAULT_OMISSION)
       truncate_at = length if length
 
       return text if truncate_at.nil? || text.bytesize <= truncate_at.to_i
 
       return "" if truncate_at.zero?
 
+      case position
+      when :start
+        truncate_start(text, truncate_at, omission, separator)
+      when :middle
+        truncate_middle(text, truncate_at, omission, separator)
+      when :end
+        truncate_from(0, text, truncate_at, omission, separator)
+      when Numeric
+        truncate_from(position, text, truncate_at, omission, separator)
+      else
+        raise Error, "unsupported position: #{position.inspect}"
+      end
+    end
+
+    private
+
+    # Truncate text at the start
+    #
+    # @param [String] text
+    #   the text to truncate
+    # @param [Integer] length
+    #   the maximum length to truncate at
+    # @param [String] omission
+    #   the string to denote omitted content
+    # @param [String|Regexp] separator
+    #   the pattern or string to separate on
+    #
+    # @return [String]
+    #   the truncated text
+    #
+    # @api private
+    def truncate_start(text, length, omission, separator)
+      text_width = display_width(Strings::ANSI.sanitize(text))
       omission_width = display_width(omission)
-      length_without_omission = truncate_at - omission_width
+      return text if text_width == length
+      return omission if omission_width == length
+
+      from = [text_width - length, 0].max
+      from += omission_width if from > 0
+      words, = *slice(text, from, length - omission_width, separator: separator)
+
+      "#{omission if from > 0}#{words}"
+    end
+
+    # Truncate text before the from position and after the length
+    #
+    # @param [Integer] from
+    #   the position to start extracting from
+    # @param [String] text
+    #   the text to truncate
+    # @param [Integer] length
+    #   the maximum length to truncate at
+    # @param [String] omission
+    #   the string to denote omitted content
+    # @param [String|Regexp] separator
+    #   the pattern or string to separate on
+    #
+    # @return [String]
+    #   the truncated text
+    #
+    # @api private
+    def truncate_from(from, text, length, omission, separator)
+      omission_width = display_width(omission)
+      length_without_omission = length - omission_width
       length_without_omission -= omission_width if from > 0
       words, stop = *slice(text, from, length_without_omission,
                            separator: separator)
@@ -79,7 +144,41 @@ module Strings
       "#{omission if from > 0}#{words}#{omission if stop}"
     end
 
-    private
+    # Truncate text in the middle
+    #
+    # @param [String] text
+    #   the text to truncate
+    # @param [Integer] length
+    #   the maximum length to truncate at
+    # @param [String] omission
+    #   the string to denote omitted content
+    # @param [String|Regexp] separator
+    #   the pattern or string to separate on
+    #
+    # @return [String]
+    #   the truncated text
+    #
+    # @api private
+    def truncate_middle(text, length, omission, separator)
+      text_width = display_width(Strings::ANSI.sanitize(text))
+      omission_width = display_width(omission)
+      return text if text_width == length
+      return omission if omission_width == length
+
+      half_length = length / 2
+      rem_length = half_length + length % 2
+      half_omission = omission_width / 2
+      rem_omission = half_omission + omission_width % 2
+
+      before_words, = *slice(text, 0, half_length - half_omission,
+                             separator: separator)
+
+      after_words, = *slice(text, text_width - rem_length + rem_omission,
+                            rem_length - rem_omission,
+                            separator: separator)
+
+      "#{before_words}#{omission}#{after_words}"
+    end
 
     # Extract number of characters from a text starting at the from position
     #
@@ -99,6 +198,7 @@ module Strings
       current_length = 0
       start_position = 0
       ansi_reset = false
+      visible_char = false
       stop = false
       words = []
       word = []
@@ -114,7 +214,8 @@ module Strings
           char = scanner.getch
           char_width = display_width(char)
           start_position += char_width
-          next if start_position <= from
+          next if (start_position - char_width) < from
+          visible_char = true
           current_length += char_width
 
           if char == separator
@@ -133,6 +234,8 @@ module Strings
           end
         end
       end
+
+      return ["", stop] unless visible_char
 
       words << word.join if words.empty?
 

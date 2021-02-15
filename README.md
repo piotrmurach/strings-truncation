@@ -88,6 +88,13 @@ strings.truncate("I try all things, I achieve what I can.", separator: " ")
 # => "I try all things, I achieve…"
 ```
 
+You can omit text from the `start`, `middle` or `end`:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can", 20, position: :middle)
+# => "I try all …at I can."
+```
+
 It supports truncation of fullwidth characters (Chinese, Japanese, Korean etc):
 
 ```ruby
