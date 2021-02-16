@@ -43,6 +43,14 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
       ["\e[34maaaaabbbbbc\e[0m", "\e[34maaaaabbbbbc\e[0m", 11],
       ["\e[34maaaaabbbbbc\e[0m", "...\e[34mbc\e[0m", 5, { omission: "..." }],
       ["\e[34maaaaabbbbbc\e[0m", "...\e[34mbbc\e[0m", 6, { omission: "..." }],
+      ["\e[34maaa bbb ccc\e[0m", "…", 1, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34m\e[0m", 2, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34m\e[0m", 3, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 4, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 5, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 6, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 7, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 8, {separator: " "}]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new
@@ -68,6 +76,14 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
       ["aaaaabbbbbc", "aaaaabbbbbc", 11],
       ["aaaaabbbbbc", "aa...", 5, { omission: "..." }],
       ["aaaaabbbbbc", "aaa...", 6, { omission: "..." }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 1, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 2, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 3, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 4, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 5, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 6, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 7, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa bbb\e[0m…", 8, {separator: " "}]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new
@@ -101,6 +117,18 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
        { omission: "..." }],
       ["\e[34maaaaabbbbbc\e[0m", "\e[34maaa\e[0m...\e[34mbc\e[0m", 8,
        { omission: "..." }],
+      ["\e[34maaa bbb ccc\e[0m", "…", 1, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 2, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…\e[34m\e[0m", 3, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…\e[34m\e[0m", 4, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…\e[34m\e[0m", 5,
+       {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…\e[34m\e[0m", 6,
+       {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…\e[34mccc\e[0m", 7,
+       {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…\e[34mccc\e[0m", 8,
+       {separator: " "}]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new

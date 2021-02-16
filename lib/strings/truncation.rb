@@ -199,33 +199,46 @@ module Strings
       start_position = 0
       ansi_reset = false
       visible_char = false
+      word_break = false
       stop = false
       words = []
       word = []
+      char = nil
 
       while !(scanner.eos? || stop)
         if scanner.scan(RESET_REGEXP)
-          words << scanner.matched
-          ansi_reset = false
+          unless scanner.eos?
+            words << scanner.matched
+            ansi_reset = false
+          end
         elsif scanner.scan(ANSI_REGEXP)
           words << scanner.matched
           ansi_reset = true
         else
+          if char == separator && start_position <= from
+            word_break = start_position != from
+          end
+
           char = scanner.getch
           char_width = display_width(char)
           start_position += char_width
           next if (start_position - char_width) < from
+
           visible_char = true
           current_length += char_width
 
           if char == separator
+            if word_break
+              word_break = false
+              next
+            end
             words << word.join
             word.clear
           end
 
           if current_length <= length || scanner.check(END_REGEXP)
             if separator
-              word << char
+              word << char unless word_break
             else
               words << char
             end
@@ -237,7 +250,7 @@ module Strings
 
       return ["", stop] unless visible_char
 
-      words << word.join if words.empty?
+      words << word.join if !word.empty? && scanner.eos?
 
       words << Strings::ANSI::RESET if ansi_reset
 

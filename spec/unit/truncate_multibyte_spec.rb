@@ -19,13 +19,13 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
     end
 
     it "truncates multibyte text with string separator" do
-      truncation = Strings::Truncation.truncate(text, 12, separator: "")
+      truncation = Strings::Truncation.truncate(text, 12, separator: "、")
       expect(truncation).to eq("ラドクリフ…")
     end
 
     it "truncates multibyte text with regex separator" do
-      truncation = Strings::Truncation.truncate(text, 12, separator: /\s/)
-      expect(truncation).to eq("ラドクリフ…")
+      truncation = Strings::Truncation.truncate(text, 12, separator: /、/)
+      expect(truncation).to eq("…")
     end
 
     it "truncates multibyte text with custom omission" do
@@ -51,6 +51,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["ありがとう!", "ありがとう!", 11],
         ["ありがとう!", "...う!", 7, { omission: "..." }],
         ["ありがとう!", "...とう!", 8, { omission: "..." }],
+        ["あり がと う", "…", 1, {separator: " "}],
+        ["あり がと う", "…", 2, {separator: " "}],
+        ["あり がと う", "…う", 3, {separator: " "}],
+        ["あり がと う", "…う", 6, {separator: " "}],
+        ["あり がと う", "…がと う", 8, {separator: " "}],
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -76,6 +81,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["*ありがとう", "*ありがとう", 11],
         ["*ありがとう", "*あ...", 7, { omission: "..." }],
         ["*ありがとう", "*あり...", 8, { omission: "..." }],
+        ["あり がと う", "…", 1, {separator: " "}],
+        ["あり がと う", "…", 2, {separator: " "}],
+        ["あり がと う", "…", 3, {separator: " "}],
+        ["あり がと う", "あり…", 6, {separator: " "}],
+        ["あり がと う", "あり…", 8, {separator: " "}],
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -101,6 +111,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["ありがとう!", "ありがとう!", 11],
         ["ありがとう!", "あ...!", 7, { omission: "..." }],
         ["ありがとう!", "あ...!", 8, { omission: "..." }],
+        ["あり がと う", "…", 1, {separator: " "}],
+        ["あり がと う", "…", 2, {separator: " "}],
+        ["あり がと う", "…", 3, {separator: " "}],
+        ["あり がと う", "…う", 6, {separator: " "}],
+        ["あり がと う", "あり…う", 8, {separator: " "}],
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
