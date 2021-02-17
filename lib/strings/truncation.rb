@@ -5,15 +5,12 @@ require "strscan"
 require "strings-ansi"
 require "unicode/display_width"
 
+require_relative "truncation/configuration"
 require_relative "truncation/version"
 
 module Strings
   class Truncation
     class Error < StandardError; end
-
-    DEFAULT_OMISSION = "…"
-
-    DEFAULT_LENGTH = 30
 
     ANSI_REGEXP  = /#{Strings::ANSI::ANSI_MATCHER}/.freeze
     RESET_REGEXP = /#{Regexp.escape(Strings::ANSI::RESET)}/.freeze
@@ -30,6 +27,56 @@ module Strings
       extend Forwardable
 
       delegate %i[truncate] => :__instance__
+    end
+
+    # Create a Strings::Truncation instance
+    #
+    # @example
+    #   strings = Strings::Truncation.new(separator: /[,- ]/)
+    #
+    # @example
+    #   strings = Strings::Truncation.new do |config|
+    #     config.separator /[,- ]/
+    #   end
+    #
+    # @param [Integer] length
+    #   the maximum length to truncate to
+    # @param [String] omission
+    #   the string to denote omitted content
+    # @param [String|Integer] position
+    #   the position of the omission within the string
+    # @param [String|Regexp] separator
+    #   the separator to break words on
+    #
+    # @api public
+    def initialize(**options)
+      configuration.update(**options)
+      yield configuration if block_given?
+    end
+
+    # Access configuration
+    #
+    # @api public
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    # Configure truncation
+    #
+    # @example
+    #   strings = Strings::Truncation.new
+    #   strings.configure do |config|
+    #     config.length 20
+    #     config.omission "[...]"
+    #     config.position :middle
+    #     config.separator /[,- ]/
+    #   end
+    #
+    # @yield [Configuration]
+    #
+    # @api public
+    def configure
+      yield configuration
     end
 
     # Truncate a text at a given length (defualts to 30)
@@ -65,8 +112,10 @@ module Strings
     #   # => "It is not down on any map; true pla[...]"
     #
     # @api public
-    def truncate(text, truncate_at = DEFAULT_LENGTH, length: nil, position: 0,
-                 separator: nil, omission: DEFAULT_OMISSION)
+    def truncate(text, truncate_at = configuration.length, length: nil,
+                 position: configuration.position,
+                 separator: configuration.separator,
+                 omission: configuration.omission)
       truncate_at = length if length
 
       return text if truncate_at.nil? || text.bytesize <= truncate_at.to_i

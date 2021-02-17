@@ -16,8 +16,7 @@ RSpec.describe Strings::Truncation, "#truncate" do
   it "truncates to length of 1 and returns only the omission character" do
     text = "It is not down on any map; true places never are."
 
-    expect(Strings::Truncation.truncate(text, 1))
-      .to eq(Strings::Truncation::DEFAULT_OMISSION)
+    expect(Strings::Truncation.truncate(text, 1)).to eq("…")
   end
 
   it "doesn't change text for equal length" do
