@@ -25,7 +25,7 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
 
     it "truncates multibyte text with regex separator" do
       truncation = Strings::Truncation.truncate(text, 12, separator: /、/)
-      expect(truncation).to eq("…")
+      expect(truncation).to eq("ラドクリフ…")
     end
 
     it "truncates multibyte text with custom omission" do

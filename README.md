@@ -81,7 +81,7 @@ strings.truncate("I try all things, I achieve what I can.", 30, omission: "[...]
 # => "I try all things, I achie[...]"
 ```
 
-If you wish to truncate preserving words use a separator:
+If you wish to truncate preserving words use a string or regexp as a separator:
 
 ```ruby
 strings.truncate("I try all things, I achieve what I can.", separator: " ")

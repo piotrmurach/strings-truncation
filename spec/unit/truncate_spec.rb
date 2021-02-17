@@ -41,15 +41,14 @@ RSpec.describe Strings::Truncation, "#truncate" do
 
   it "truncates whole words when separated used" do
     text = "It is not down on any map; true places never are."
-    omission = "…"
     truncation = Strings::Truncation.truncate(text, separator: " ")
 
-    expect(truncation).to eq("It is not down on any map;#{omission}")
+    expect(truncation).to eq("It is not down on any map;…")
   end
 
   it "truncates on word boundary" do
     text = "It is not down on any map; true places never are."
-    truncation = Strings::Truncation.truncate(text, 21, separator: " ")
+    truncation = Strings::Truncation.truncate(text, 21, separator: /\s/)
 
     expect(truncation).to eq("It is not down on…")
   end

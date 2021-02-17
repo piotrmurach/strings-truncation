@@ -73,6 +73,8 @@ module Strings
 
       return "" if truncate_at.zero?
 
+      separator = Regexp.new(separator) if separator
+
       case position
       when :start
         truncate_start(text, truncate_at, omission, separator)
@@ -215,7 +217,7 @@ module Strings
           words << scanner.matched
           ansi_reset = true
         else
-          if char == separator && start_position <= from
+          if char =~ separator && start_position <= from
             word_break = start_position != from
           end
 
@@ -227,7 +229,7 @@ module Strings
           visible_char = true
           current_length += char_width
 
-          if char == separator
+          if char =~ separator
             if word_break
               word_break = false
               next
