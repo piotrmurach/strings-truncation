@@ -28,7 +28,23 @@ RSpec.describe Strings::Truncation, "#configure" do
     expect(strings.truncate(text)).to eq("[...]achieve what I can.")
   end
 
-  it "configures settings at runtime" do
+  it "configures settings at runtime using keyword arguments" do
+    strings = described_class.new
+
+    strings.configure(length: 25, omission: "[...]", position: :start,
+                      separator: /[, ]/)
+
+    expect(strings.configuration.length).to eq(25)
+    expect(strings.configuration.omission).to eq("[...]")
+    expect(strings.configuration.position).to eq(:start)
+    expect(strings.configuration.separator).to eq(/[, ]/)
+
+    text = "I try all things, I achieve what I can."
+
+    expect(strings.truncate(text)).to eq("[...]achieve what I can.")
+  end
+
+  it "configures settings at runtime using a block" do
     strings = described_class.new
 
     strings.configure do |config|

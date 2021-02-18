@@ -66,11 +66,19 @@ module Strings
     #     config.separator /[,- ]/
     #   end
     #
+    # @example
+    #   strings = Strings::Truncation.new
+    #   strings.configure length: 20, omission: "[...]"
+    #
     # @yield [Configuration]
     #
     # @api public
-    def configure
-      yield configuration
+    def configure(**options)
+      if block_given?
+        yield configuration
+      else
+        configuration.update(**options)
+      end
     end
 
     # Truncate a text at a given length (defualts to 30)
