@@ -11,11 +11,12 @@ RSpec.describe Strings::Truncation, "#configure" do
   end
 
   it "configures settings at initialisation" do
-    strings = described_class.new(position: :start,
-                                  separator: /[, ]/) do |config|
-      config.length 25
-      config.omission "[...]"
-    end
+    strings = described_class.new(
+      length: 25,
+      omission: "[...]",
+      position: :start,
+      separator: /[, ]/
+    )
 
     expect(strings.configuration.length).to eq(25)
     expect(strings.configuration.omission).to eq("[...]")

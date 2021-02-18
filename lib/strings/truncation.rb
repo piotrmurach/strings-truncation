@@ -34,11 +34,6 @@ module Strings
     # @example
     #   strings = Strings::Truncation.new(separator: /[,- ]/)
     #
-    # @example
-    #   strings = Strings::Truncation.new do |config|
-    #     config.separator /[,- ]/
-    #   end
-    #
     # @param [Integer] length
     #   the maximum length to truncate to
     # @param [String] omission
@@ -51,7 +46,6 @@ module Strings
     # @api public
     def initialize(**options)
       configuration.update(**options)
-      yield configuration if block_given?
     end
 
     # Access configuration
