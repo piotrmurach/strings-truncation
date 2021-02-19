@@ -56,6 +56,10 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["あり がと う", "…う", 3, {separator: " "}],
         ["あり がと う", "…う", 6, {separator: " "}],
         ["あり がと う", "…がと う", 8, {separator: " "}],
+        ["あり がと う", "…がと う", 9, {separator: " "}],
+        ["あり がと う", "…がと う", 10, {separator: " "}],
+        ["あり がと う", "…がと う", 11, {separator: " "}],
+        ["あり がと う", "あり がと う", 12, {separator: " "}],
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new

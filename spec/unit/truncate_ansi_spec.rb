@@ -50,7 +50,10 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
       ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 5, {separator: " "}],
       ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 6, {separator: " "}],
       ["\e[34maaa bbb ccc\e[0m", "…\e[34mccc\e[0m", 7, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 8, {separator: " "}]
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 8, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 9, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 10, {separator: " "}],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa bbb ccc\e[0m", 11, {separator: " "}]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new

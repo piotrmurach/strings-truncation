@@ -125,7 +125,10 @@ RSpec.describe Strings::Truncation, "#truncate" do
       ["aaa bbb ccc", "…ccc", 5, {separator: " "}],
       ["aaa bbb ccc", "…ccc", 6, {separator: " "}],
       ["aaa bbb ccc", "…ccc", 7, {separator: " "}],
-      ["aaa bbb ccc", "…bbb ccc", 8, {separator: " "}]
+      ["aaa bbb ccc", "…bbb ccc", 8, {separator: " "}],
+      ["aaa bbb ccc", "…bbb ccc", 9, {separator: " "}],
+      ["aaa bbb ccc", "…bbb ccc", 10, {separator: " "}],
+      ["aaa bbb ccc", "aaa bbb ccc", 11, {separator: " "}]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new

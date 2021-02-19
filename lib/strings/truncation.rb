@@ -268,7 +268,8 @@ module Strings
           words << scanner.matched
           ansi_reset = true
         else
-          if char =~ separator && start_position <= from
+          if (char =~ separator && start_position <= from) ||
+             separator && start_position.zero?
             word_break = start_position != from
           end
 
