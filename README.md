@@ -18,14 +18,23 @@
 [coverage]: https://coveralls.io/github/piotrmurach/strings-truncation?branch=master
 [inchpages]: http://inch-ci.org/github/piotrmurach/strings-truncation
 
-> Truncate strings with fullwidth characters and ANSI codes
+> Truncate strings with fullwidth characters and ANSI codes.
 
 ## Features
 
 * No monkey-patching String class
-* Supports multibyte character encodings such as UTF-8, EUC-JP
-* Handles languages without white-spaces between words (Chinese, Japanese, Korean etc)
-* Supports ANSI escape codes
+* Omit text from the start, middle, end or both ends
+* Account for fullwidth characters in encodings such as UTF-8, EUC-JP
+* Shorten text without whitespaces between words (Chinese, Japanese, Korean etc)
+* Preserve ANSI escape codes
+
+## Contents
+
+* [1. Usage](#1-usage)
+* [2. API](#2-api)
+  * [2.1 configure](#21-configure)
+  * [2.2 truncate](#22-truncate)
+* [3. Extending String class](#3-extending-string-class)
 
 ## Installation
 
@@ -74,42 +83,123 @@ strings.truncate("I try all things, I achieve what I can.", length: 15)
 # => "I try all thin…"
 ```
 
-You can specify custom omission string:
+You can specify custom omission string in place of default `…`:
 
 ```ruby
-strings.truncate("I try all things, I achieve what I can.", 30, omission: "[...]")
-# => "I try all things, I achie[...]"
+strings.truncate("I try all things, I achieve what I can.", omission: "...")
+# => "I try all things, I achieve..."
 ```
 
 If you wish to truncate preserving words use a string or regexp as a separator:
 
 ```ruby
-strings.truncate("I try all things, I achieve what I can.", separator: " ")
+strings.truncate("I try all things, I achieve what I can.", separator: /\s/)
 # => "I try all things, I achieve…"
 ```
 
-You can omit text from the `start`, `middle` or `end`:
+You can omit text from the `start`, `middle`, `end` or both `ends`:
 
 ```ruby
-strings.truncate("I try all things, I achieve what I can", 20, position: :middle)
-# => "I try all …at I can."
+strings.truncate("I try all things, I achieve what I can", position: :middle)
+# => "I try all thing…ve what I can."
 ```
 
-It supports truncation of fullwidth characters (Chinese, Japanese, Korean etc):
+You can truncate text with fullwidth characters (Chinese, Japanese, Korean etc):
 
 ```ruby
-strings.truncate("太丸ゴシック体", 8)
-# => "太丸ゴ…"
+strings.truncate("おはようございます", 8)
+# => "おはよ…"
 ```
 
-It supports truncation of ANSI escape codes as well:
+As well as truncate text that contains ANSI escape codes:
 
 ```ruby
 strings.truncate("\e[34mI try all things, I achieve what I can\e[0m", 18)
 # => "\e[34mI try all things,\e[0m…"
 ```
 
-## 2. Extending String class
+## 2. API
+
+### 2.1 configure
+
+To change default configuration settings at initialization use keyword arguments.
+
+For example, to omit text from the start and separate on a whitespace character do:
+
+```ruby
+strings = Strings::Truncation.new(position: :start, separator: /\s/)
+```
+
+After initialization, you can use `configure` to change settings like so:
+
+```ruby
+strings.configure do |config|
+  config.length 25
+  config.omission "[...]"
+  config.position :start
+  config.separator /\s/
+end
+```
+
+### 2.2 truncate
+
+By default a string is truncated from the end to maximum length of `30` display columns.
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.")
+# => "I try all things, I achieve w…"
+```
+
+To change the default truncation length, pass an integer as a second argument:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", 15)
+# => "I try all thin…"
+```
+
+Or use `:length` keyword to be more explicit:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", length: 15)
+# => "I try all thin…"
+```
+
+The default `…` omission character can be replaced using `:omission`:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", omission: "...")
+# => "I try all things, I achieve..."
+```
+
+You can omit text from the `start`, `middle`, `end` or both `ends` by specifying `:position`:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can", position: :start)
+# => "…things, I achieve what I can."
+
+strings.truncate("I try all things, I achieve what I can", position: :middle)
+# => "I try all thing…ve what I can."
+
+strings.truncate("I try all things, I achieve what I can", position: :ends)
+# => "… all things, I achieve what …"
+```
+
+To truncate based on custom character(s) use `:separator` that accepts a string or regular expression:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", separator: /\s/)
+=> "I try all things, I achieve…"
+```
+
+You can combine all settings to achieve desired result:
+
+```ruby
+strings.truncate("I try all things, I achieve what I can.", length: 20,
+                 omission: "...", position: :ends, separator: /\s/)
+# => "...I achieve what..."
+```
+
+## 3. Extending String class
 
 Though it is highly discouraged to pollute core Ruby classes, you can add the required methods to String class by using refinements.
 
