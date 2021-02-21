@@ -186,6 +186,56 @@ RSpec.describe Strings::Truncation, "#truncate" do
     end
   end
 
+  context "from both ends" do
+    [
+      ["aaaaabbbbb", "", 0],
+      ["aaaaabbbbb", "…", 1],
+      ["aaaaabbbbb", "…", 2],
+      ["aaaaabbbbb", "…a…", 3],
+      ["aaaaabbbbb", "…ab…", 4],
+      ["aaaaabbbbb", "…aab…", 5],
+      ["aaaaabbbbb", "…aabb…", 6],
+      ["aaaaabbbbb", "aaaaabbbbb", 10],
+      ["aaaaabbbbb", "...", 5, { omission: "..." }],
+      ["aaaaabbbbb", "...a...", 7, { omission: "..." }],
+      ["aaaaabbbbb", "...ab...", 8, { omission: "..." }],
+      ["aaaaabbbbbc", "…", 2],
+      ["aaaaabbbbbc", "…b…", 3],
+      ["aaaaabbbbbc", "…ab…", 4],
+      ["aaaaabbbbbc", "…abb…", 5],
+      ["aaaaabbbbbc", "…aabb…", 6],
+      ["aaaaabbbbbc", "aaaaabbbbbc", 11],
+      ["aaaaabbbbbc", "...", 5, { omission: "..." }],
+      ["aaaaabbbbbc", "...b...", 7, { omission: "..." }],
+      ["aaaaabbbbbc", "...ab...", 8, { omission: "..." }],
+      ["aaa bbb ccc", "…", 1, { separator: " " }],
+      ["aaa bbb ccc", "…", 2, { separator: " " }],
+      ["aaa bbb ccc", "…", 3, { separator: " " }],
+      ["aaa bbb ccc", "…", 4, { separator: " " }],
+      ["aaa bbb ccc", "…bbb…", 5, { separator: " " }],
+      ["aaa bbb ccc", "…bbb…", 6, { separator: " " }],
+      ["aaa bbb ccc", "…bbb…", 7, { separator: " " }],
+      ["aaa bbb ccc", "…bbb ccc", 8, { separator: " " }],
+      ["aaa bbb ccc", "..bbb..", 9, { separator: " ", omission: ".." }],
+      ["aaa bbb ccc", "..bbb ccc", 10, { separator: " ", omission: ".." }]
+    ].each do |text, truncated, length, options = {}|
+      it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
+        strings = Strings::Truncation.new
+        options.update(position: :ends)
+        expect(strings.truncate(text, length, **options)).to eq(truncated)
+      end
+    end
+
+    it "truncates text from both ends with long omission and separator" do
+      text = "It is not down on any map; true places never are."
+      truncation = Strings::Truncation.truncate(text, 35, position: :ends,
+                                                          omission: "...",
+                                                          separator: " ")
+
+      expect(truncation).to eq("...down on any map; true places...")
+    end
+  end
+
   context "from the middle" do
     [
       ["aaaaabbbbb", "", 0],

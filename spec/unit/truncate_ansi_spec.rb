@@ -65,32 +65,69 @@ RSpec.describe Strings::Truncation, "truncates ansi" do
 
   context "from the end" do
     [
-      ["aaaaabbbbb", "", 0],
-      ["aaaaabbbbb", "…", 1],
-      ["aaaaabbbbb", "a…", 2],
-      ["aaaaabbbbb", "aaaa…", 5],
-      ["aaaaabbbbb", "aaaaa…", 6],
-      ["aaaaabbbbb", "aaaaabbbbb", 10],
-      ["aaaaabbbbb", "aa...", 5, { omission: "..." }],
-      ["aaaaabbbbb", "aaa...", 6, { omission: "..." }],
-      ["aaaaabbbbbc", "a…", 2],
-      ["aaaaabbbbbc", "aaaa…", 5],
-      ["aaaaabbbbbc", "aaaaa…", 6],
-      ["aaaaabbbbbc", "aaaaabbbbbc", 11],
-      ["aaaaabbbbbc", "aa...", 5, { omission: "..." }],
-      ["aaaaabbbbbc", "aaa...", 6, { omission: "..." }],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 1, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 2, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 3, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 4, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 5, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 6, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 7, {separator: " "}],
-      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa bbb\e[0m…", 8, {separator: " "}]
+      ["\e[34maaaaabbbbb\e[0m", "", 0],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34m\e[0m…", 1],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34ma\e[0m…", 2],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maaaa\e[0m…", 5],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maaaaa\e[0m…", 6],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maaaaabbbbb\e[0m", 10],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maa\e[0m...", 5, { omission: "..." }],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maaa\e[0m...", 6, { omission: "..." }],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34ma\e[0m…", 2],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maaaa\e[0m…", 5],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maaaaa\e[0m…", 6],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maaaaabbbbbc\e[0m", 11],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maa\e[0m...", 5, { omission: "..." }],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maaa\e[0m...", 6, { omission: "..." }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 1, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 2, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34m\e[0m…", 3, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 4, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 5, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 6, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa\e[0m…", 7, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "\e[34maaa bbb\e[0m…", 8, { separator: " " }]
     ].each do |text, truncated, length, options = {}|
       it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
         strings = Strings::Truncation.new
         options.update(position: :end)
+        expect(strings.truncate(text, length, **options)).to eq(truncated)
+      end
+    end
+  end
+
+  context "from both ends" do
+    [
+      ["\e[34maaaaabbbbb\e[0m", "", 0],
+      ["\e[34maaaaabbbbb\e[0m", "…", 1],
+      ["\e[34maaaaabbbbb\e[0m", "…", 2],
+      ["\e[34maaaaabbbbb\e[0m", "…\e[34ma\e[0m…", 3],
+      ["\e[34maaaaabbbbb\e[0m", "…\e[34mab\e[0m…", 4],
+      ["\e[34maaaaabbbbb\e[0m", "…\e[34maab\e[0m…", 5],
+      ["\e[34maaaaabbbbb\e[0m", "…\e[34maabb\e[0m…", 6],
+      ["\e[34maaaaabbbbb\e[0m", "\e[34maaaaabbbbb\e[0m", 10],
+      ["\e[34maaaaabbbbb\e[0m", "...", 5, { omission: "..." }],
+      ["\e[34maaaaabbbbb\e[0m", "...\e[34ma\e[0m...", 7, { omission: "..." }],
+      ["\e[34maaaaabbbbb\e[0m", "...\e[34mab\e[0m...", 8, { omission: "..." }],
+      ["\e[34maaaaabbbbbc\e[0m", "…", 2],
+      ["\e[34maaaaabbbbbc\e[0m", "…\e[34mabb\e[0m…", 5],
+      ["\e[34maaaaabbbbbc\e[0m", "…\e[34maabb\e[0m…", 6],
+      ["\e[34maaaaabbbbbc\e[0m", "\e[34maaaaabbbbbc\e[0m", 11],
+      ["\e[34maaaaabbbbbc\e[0m", "...", 5, { omission: "..." }],
+      ["\e[34maaaaabbbbbc\e[0m", "...\e[34mb\e[0m...", 7, { omission: "..." }],
+      ["\e[34maaaaabbbbbc\e[0m", "...\e[34mab\e[0m...", 8, { omission: "..." }],
+      ["\e[34maaa bbb ccc\e[0m", "…", 1, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…", 2, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34m\e[0m…", 3, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34m\e[0m…", 4, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb\e[0m…", 5, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb\e[0m…", 6, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb\e[0m…", 7, { separator: " " }],
+      ["\e[34maaa bbb ccc\e[0m", "…\e[34mbbb ccc\e[0m", 10, { separator: " " }]
+    ].each do |text, truncated, length, options = {}|
+      it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
+        strings = Strings::Truncation.new
+        options.update(position: :ends)
         expect(strings.truncate(text, length, **options)).to eq(truncated)
       end
     end

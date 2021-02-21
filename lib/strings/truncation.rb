@@ -131,6 +131,8 @@ module Strings
         truncate_start(text, truncate_at, omission, separator)
       when :middle
         truncate_middle(text, truncate_at, omission, separator)
+      when :ends
+        truncate_ends(text, truncate_at, omission, separator)
       when :end
         truncate_from(0, text, truncate_at, omission, separator)
       when Numeric
@@ -165,7 +167,9 @@ module Strings
 
       from = [text_width - length, 0].max
       from += omission_width if from > 0
-      words, = *slice(text, from, length - omission_width, separator: separator)
+      words, = *slice(text, from, length - omission_width,
+                      omission_width: omission_width,
+                      separator: separator)
 
       "#{omission if from > 0}#{words}"
     end
@@ -192,6 +196,7 @@ module Strings
       length_without_omission = length - omission_width
       length_without_omission -= omission_width if from > 0
       words, stop = *slice(text, from, length_without_omission,
+                           omission_width: omission_width,
                            separator: separator)
 
       "#{omission if from > 0}#{words}#{omission if stop}"
@@ -224,13 +229,45 @@ module Strings
       rem_omission = half_omission + omission_width % 2
 
       before_words, = *slice(text, 0, half_length - half_omission,
+                             omission_width: half_omission,
                              separator: separator)
 
       after_words, = *slice(text, text_width - rem_length + rem_omission,
                             rem_length - rem_omission,
+                            omission_width: rem_omission,
                             separator: separator)
 
       "#{before_words}#{omission}#{after_words}"
+    end
+
+    # Truncate text at both ends
+    #
+    # @param [String] text
+    #   the text to truncate
+    # @param [Integer] length
+    #   the maximum length to truncate at
+    # @param [String] omission
+    #   the string to denote omitted content
+    # @param [String|Regexp] separator
+    #   the pattern or string to separate on
+    #
+    # @return [String]
+    #   the truncated text
+    #
+    # @api private
+    def truncate_ends(text, length, omission, separator)
+      text_width = display_width(Strings::ANSI.sanitize(text))
+      omission_width = display_width(omission)
+      return text if text_width <= length
+      return omission if length <= 2 * omission_width
+
+      from = (text_width - length) / 2 + omission_width
+      words, stop = *slice(text, from, length - 2 * omission_width,
+                           omission_width: omission_width,
+                           separator: separator)
+      return omission if words.empty?
+
+      "#{omission if from > 0}#{words}#{omission if stop}"
     end
 
     # Extract number of characters from a text starting at the from position
@@ -239,6 +276,8 @@ module Strings
     #   the position to start from
     # @param [Integer] length
     #   the number of characters to extract
+    # @param [Integer] omission_width
+    #   the width of the omission
     # @param [String|Regexp] separator
     #   the string or pattern to use for splitting words
     #
@@ -246,8 +285,9 @@ module Strings
     #   return a substring and a stop flag
     #
     # @api private
-    def slice(text, from, length, separator: nil)
+    def slice(text, from, length, omission_width: 0, separator: nil)
       scanner = StringScanner.new(text)
+      length_with_omission = length + omission_width
       current_length = 0
       start_position = 0
       ansi_reset = false
@@ -284,13 +324,15 @@ module Strings
           if char =~ separator
             if word_break
               word_break = false
+              current_length = 0
               next
             end
             words << word.join
             word.clear
           end
 
-          if current_length <= length || scanner.check(END_REGEXP)
+          if current_length <= length || scanner.check(END_REGEXP) &&
+                                         current_length <= length_with_omission
             if separator
               word << char unless word_break
             else

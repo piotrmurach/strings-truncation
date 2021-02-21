@@ -99,6 +99,42 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
       end
     end
 
+    context "from both ends" do
+      [
+        ["ありがとう", "", 0],
+        ["ありがとう", "…", 1],
+        ["ありがとう", "…", 2],
+        ["ありがとう", "…が…", 5],
+        ["ありがとう", "…がと…", 6],
+        ["ありがとう", "…りが…", 7],
+        ["ありがとう", "…りがと…", 8],
+        ["ありがとう", "…りがとう", 9],
+        ["ありがとう", "ありがとう", 10],
+        ["ありがとう", "...", 7, { omission: "..." }],
+        ["ありがとう", "...が...", 8, { omission: "..." }],
+        ["ありがとう!", "…", 2],
+        ["ありがとう!", "…が…", 5],
+        ["ありがとう!", "…がと…", 6],
+        ["ありがとう!", "…りがと…", 8],
+        ["ありがとう!", "…りがとう!", 10],
+        ["ありがとう!", "ありがとう!", 11],
+        ["ありがとう!", "..が..", 7, { omission: ".." }],
+        ["ありがとう!", "..がと..", 8, { omission: ".." }],
+        ["あり がと う", "…", 1, { separator: " " }],
+        ["あり がと う", "…", 2, { separator: " " }],
+        ["あり がと う", "…がと…", 6, { separator: " " }],
+        ["あり がと う", "…がと …", 7, { separator: " " }],
+        ["あり がと う", "…がと う", 8, { separator: " " }],
+        ["あり がと う", "…がと う", 9, { separator: " " }]
+      ].each do |text, truncated, length, options = {}|
+        it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
+          strings = Strings::Truncation.new
+          options.update(position: :ends)
+          expect(strings.truncate(text, length, **options)).to eq(truncated)
+        end
+      end
+    end
+
     context "from the middle" do
       [
         ["ありがとう", "", 0],
