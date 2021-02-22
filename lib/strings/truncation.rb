@@ -14,7 +14,7 @@ module Strings
 
     ANSI_REGEXP  = /#{Strings::ANSI::ANSI_MATCHER}/.freeze
     RESET_REGEXP = /#{Regexp.escape(Strings::ANSI::RESET)}/.freeze
-    END_REGEXP   = /\A(#{Strings::ANSI::ANSI_MATCHER})?\z/.freeze
+    END_REGEXP   = /\A(#{Strings::ANSI::ANSI_MATCHER})*\z/.freeze
 
     # Global instance
     #

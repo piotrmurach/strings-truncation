@@ -2,7 +2,7 @@
 
 RSpec.describe Strings::Truncation, "truncates ansi" do
   it "doesn't truncate string matching length" do
-    text = "\e[32mHello\e[0m"
+    text = "\e[32mHello\e[0m\e[34m\e[0m"
     expect(Strings::Truncation.truncate(text, 5)).to eq(text)
   end
 
