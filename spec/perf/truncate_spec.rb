@@ -15,6 +15,16 @@ RSpec.describe Strings::Truncation do
     }.at_most(135).times
   end
 
+  it "truncates text with separator slower than ActiveSupport" do
+    text = "It is not down on any map; true places never are."
+    separator = /\s/
+    expect {
+      Strings::Truncation.truncate(text, 20, separator: separator)
+    }.to perform_slower_than {
+      text.truncate(20, separator: separator)
+    }.at_most(55).times
+  end
+
   it "allocates no more than 95 objects" do
     text = "It is not down on any map; true places never are."
     expect {
