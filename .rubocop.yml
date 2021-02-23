@@ -1,6 +1,9 @@
 AllCops:
   NewCops: enable
 
+Layout/FirstArrayElementIndentation:
+  Enabled: false
+
 Layout/LineLength:
   Max: 80
 
