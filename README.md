@@ -62,7 +62,7 @@ strings.truncate("I try all things, I achieve what I can.")
 # => "I try all things, I achieve w…"
 ```
 
-As a convenience, you can call methods directly on a class:
+As a convenience, you can call `truncate` method directly on a class:
 
 ```ruby
 Strings::Truncation.truncate("I try all things, I achieve what I can.")
@@ -76,7 +76,7 @@ strings.truncate("I try all things, I achieve what I can.", 15)
 # => "I try all thin…"
 ```
 
-Or if you want to be more flexible use `:length` keyword:
+Or if you want to be more explicit and flexible use `:length` keyword:
 
 ```ruby
 strings.truncate("I try all things, I achieve what I can.", length: 15)
@@ -130,7 +130,7 @@ For example, to omit text from the start and separate on a whitespace character 
 strings = Strings::Truncation.new(position: :start, separator: /\s/)
 ```
 
-After initialization, you can use `configure` to change settings like so:
+After initialization, you can use `configure` to change settings inside a block:
 
 ```ruby
 strings.configure do |config|
@@ -139,6 +139,12 @@ strings.configure do |config|
   config.position :start
   config.separator /\s/
 end
+```
+
+Alternatively, you can also use `configure` with keyword arguments:
+
+```ruby
+strings.configure(position: :start, separator: /\s/)
 ```
 
 ### 2.2 truncate
