@@ -51,15 +51,15 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["ありがとう!", "ありがとう!", 11],
         ["ありがとう!", "...う!", 7, { omission: "..." }],
         ["ありがとう!", "...とう!", 8, { omission: "..." }],
-        ["あり がと う", "…", 1, {separator: " "}],
-        ["あり がと う", "…", 2, {separator: " "}],
-        ["あり がと う", "…う", 3, {separator: " "}],
-        ["あり がと う", "…う", 6, {separator: " "}],
-        ["あり がと う", "…がと う", 8, {separator: " "}],
-        ["あり がと う", "…がと う", 9, {separator: " "}],
-        ["あり がと う", "…がと う", 10, {separator: " "}],
-        ["あり がと う", "…がと う", 11, {separator: " "}],
-        ["あり がと う", "あり がと う", 12, {separator: " "}],
+        ["あり がと う", "…", 1, { separator: " " }],
+        ["あり がと う", "…", 2, { separator: " " }],
+        ["あり がと う", "…う", 3, { separator: " " }],
+        ["あり がと う", "…う", 6, { separator: " " }],
+        ["あり がと う", "…がと う", 8, { separator: " " }],
+        ["あり がと う", "…がと う", 9, { separator: " " }],
+        ["あり がと う", "…がと う", 10, { separator: " " }],
+        ["あり がと う", "…がと う", 11, { separator: " " }],
+        ["あり がと う", "あり がと う", 12, { separator: " " }]
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -85,11 +85,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["*ありがとう", "*ありがとう", 11],
         ["*ありがとう", "*あ...", 7, { omission: "..." }],
         ["*ありがとう", "*あり...", 8, { omission: "..." }],
-        ["あり がと う", "…", 1, {separator: " "}],
-        ["あり がと う", "…", 2, {separator: " "}],
-        ["あり がと う", "…", 3, {separator: " "}],
-        ["あり がと う", "あり…", 6, {separator: " "}],
-        ["あり がと う", "あり…", 8, {separator: " "}],
+        ["あり がと う", "…", 1, { separator: " " }],
+        ["あり がと う", "…", 2, { separator: " " }],
+        ["あり がと う", "…", 3, { separator: " " }],
+        ["あり がと う", "あり…", 6, { separator: " " }],
+        ["あり がと う", "あり…", 8, { separator: " " }]
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -151,11 +151,11 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["ありがとう!", "ありがとう!", 11],
         ["ありがとう!", "あ...!", 7, { omission: "..." }],
         ["ありがとう!", "あ...!", 8, { omission: "..." }],
-        ["あり がと う", "…", 1, {separator: " "}],
-        ["あり がと う", "…", 2, {separator: " "}],
-        ["あり がと う", "…", 3, {separator: " "}],
-        ["あり がと う", "…う", 6, {separator: " "}],
-        ["あり がと う", "あり…う", 8, {separator: " "}],
+        ["あり がと う", "…", 1, { separator: " " }],
+        ["あり がと う", "…", 2, { separator: " " }],
+        ["あり がと う", "…", 3, { separator: " " }],
+        ["あり がと う", "…う", 6, { separator: " " }],
+        ["あり がと う", "あり…う", 8, { separator: " " }]
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -201,7 +201,7 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["Здравствуйте!", "…уйте!", 6],
         ["Здравствуйте!", "Здравствуйте!", 13],
         ["Здравствуйте!", "...йте!", 7, { omission: "..." }],
-        ["Здравствуйте!", "...уйте!", 8, { omission: "..." }],
+        ["Здравствуйте!", "...уйте!", 8, { omission: "..." }]
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new
@@ -226,7 +226,7 @@ RSpec.describe Strings::Truncation, "truncate multibyte" do
         ["Здравствуйте!", "Здр…е!", 6],
         ["Здравствуйте!", "Здравствуйте!", 13],
         ["Здравствуйте!", "Зд...е!", 7, { omission: "..." }],
-        ["Здравствуйте!", "Здр...е!", 8, { omission: "..." }],
+        ["Здравствуйте!", "Здр...е!", 8, { omission: "..." }]
       ].each do |text, truncated, length, options = {}|
         it "truncates #{text.inspect} at #{length} -> #{truncated.inspect}" do
           strings = Strings::Truncation.new

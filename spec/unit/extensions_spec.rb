@@ -11,7 +11,8 @@ RSpec.describe Strings::Truncation::Extensions do
   end
 
   it "truncates a string based on separator" do
-    expect("I try all things, I achieve what I can.".truncate(15, separator: " "))
-      .to eq("I try all…")
+    expect(
+      "I try all things, I achieve what I can.".truncate(15, separator: " ")
+    ).to eq("I try all…")
   end
 end
