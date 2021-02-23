@@ -318,7 +318,6 @@ module Strings
           start_position += char_width
           next if (start_position - char_width) < from
 
-          visible_char = true
           current_length += char_width
 
           if char =~ separator
@@ -327,6 +326,7 @@ module Strings
               current_length = 0
               next
             end
+            visible_char = true
             words << word.join
             word.clear
           end
@@ -337,12 +337,15 @@ module Strings
               word << char unless word_break
             else
               words << char
+              visible_char = true
             end
           else
             stop = true
           end
         end
       end
+
+      visible_char = true if !word.empty? && scanner.eos?
 
       return ["", stop] unless visible_char
 
