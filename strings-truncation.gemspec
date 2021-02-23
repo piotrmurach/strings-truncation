@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.version       = Strings::Truncation::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = ["piotr@piotrmurach.com"]
-  spec.summary       = %q{Truncate strings with multibyte chars and ANSI codes}
-  spec.description   = %q{Truncate strings with multibyte chars and ANSI codes}
+  spec.summary       = %q{Truncate strings with fullwidth characters and ANSI codes.}
+  spec.description   = %q{Truncate strings with fullwidth characters and ANSI codes. Characters can be omitted from the start, middle, end or both ends.}
   spec.homepage      = "https://github.com/piotrmurach/strings-truncation"
   spec.license       = "MIT"
 
