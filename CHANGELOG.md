@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.1.0] - 2020-02-23
+## [v0.1.0] - 2021-02-23
 
 * Initial implementation and release
 
