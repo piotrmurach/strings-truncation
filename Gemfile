@@ -5,8 +5,10 @@ gemspec
 group :test do
   gem "activesupport"
   gem "benchmark-ips", "~> 2.7.2"
-  gem "simplecov", "~> 0.16.1"
-  gem "coveralls", "~> 0.8.22"
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")
+    gem "coveralls_reborn", "~> 0.22.0"
+    gem "simplecov", "~> 0.21.0"
+  end
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")
     gem "rspec-benchmark", "~> 0.6"
   end
