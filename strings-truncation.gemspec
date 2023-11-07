@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
     spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/strings-truncation"
     spec.metadata["homepage_uri"] = spec.homepage
     spec.metadata["rubygems_mfa_required"] = "true"
+    spec.metadata["source_code_uri"] = "https://github.com/piotrmurach/strings-truncation"
   end
 
   spec.files = Dir["lib/**/*"]
